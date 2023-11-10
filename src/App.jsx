@@ -31,16 +31,20 @@ export default function App() {
 		// Put the most recently-modified note at the top
 		setNotes((oldNotes) => {
 			const newArray = []
-			for (let i = 0; i < oldNotes.length; i++) {
-				const oldNote = oldNotes[i]
-				if (oldNote.id === currentNoteId) {
-					newArray.unshift({ ...oldNote, body: text })
+			for (let note of oldNotes) {
+				if (note.id === currentNoteId) {
+					newArray.unshift({ ...note, body: text })
 				} else {
-					newArray.push(oldNote)
+					newArray.push(note)
 				}
 			}
 			return newArray
 		})
+	}
+
+	function deleteNote(event, noteId) {
+		event.stopPropagation()
+		setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteId))
 	}
 
 	function findCurrentNote() {
@@ -64,6 +68,7 @@ export default function App() {
 						currentNote={findCurrentNote()}
 						setCurrentNoteId={setCurrentNoteId}
 						newNote={createNewNote}
+						deleteNote={deleteNote}
 					/>
 					{currentNoteId && notes.length > 0 && (
 						<Editor
